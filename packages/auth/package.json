@@ -1,0 +1,25 @@
+{
+  "name": "@illtip-monorepo/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@better-auth/expo": "catalog:",
+    "@illtip-monorepo/db": "workspace:*",
+    "@illtip-monorepo/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@illtip-monorepo/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

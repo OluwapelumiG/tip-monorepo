@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "scheme": "illtip-monorepo",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "illtip-monorepo",
+    "slug": "illtip-monorepo",
+    "plugins": ["expo-font"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
