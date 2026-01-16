@@ -4,12 +4,12 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start",
-    "dev": "expo start --clear",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "start": "dotenv -e ../../.env -- expo start",
+    "dev": "dotenv -e ../../.env -- expo start --clear",
+    "android": "dotenv -e ../../.env -- expo run:android",
+    "ios": "dotenv -e ../../.env -- expo run:ios",
     "prebuild": "expo prebuild",
-    "web": "expo start --web"
+    "web": "dotenv -e ../../.env -- expo start --web"
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",

@@ -3,11 +3,11 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsdown",
+    "build": "dotenv -e ../../.env -- tsdown",
     "check-types": "tsc -b",
-    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-    "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.js"
+    "compile": "dotenv -e ../../.env -- bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "dev": "dotenv -e ../../.env -- bun run --hot src/index.ts",
+    "start": "dotenv -e ../../.env -- bun run dist/index.js"
   },
   "dependencies": {
     "@illtip-monorepo/api": "workspace:*",
