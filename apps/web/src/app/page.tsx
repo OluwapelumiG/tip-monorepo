@@ -37,7 +37,7 @@ export default function Home() {
               <Link href="/login">
                 <Button variant="ghost" className="font-medium hover:bg-primary/10 hover:text-primary">Sign In</Button>
               </Link>
-              <Link href="/login">
+              <Link href="/signup">
                 <Button className="rounded-full px-8 font-semibold shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95">
                   Get Started
                 </Button>
@@ -95,7 +95,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
               >
-                <Link href="/login">
+                <Link href="/signup">
                   <Button size="lg" className="h-14 w-full rounded-full px-10 text-lg font-bold shadow-2xl shadow-primary/30 sm:w-auto hover:scale-105 transition-transform">
                     Find Your Job <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -304,7 +304,7 @@ export default function Home() {
                       <p className="text-xl md:text-2xl text-primary-foreground/80">Join thousands of professionals finding their dream jobs with i'llTip today.</p>
                       
                       <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-                           <Link href="/login">
+                           <Link href="/signup">
                               <Button size="lg" variant="secondary" className="h-16 rounded-full px-12 text-xl font-bold text-primary hover:scale-105 transition-transform shadow-xl">
                                 Get Started Now
                               </Button>
