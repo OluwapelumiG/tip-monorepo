@@ -9,8 +9,16 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  role          Role      @default(customer)
+
   @@unique([email])
   @@map("user")
+}
+
+enum Role {
+  admin
+  freelancer
+  customer
 }
 
 model Session {

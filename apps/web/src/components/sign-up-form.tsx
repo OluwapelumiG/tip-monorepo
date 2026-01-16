@@ -10,7 +10,17 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) {
+import { ArrowLeft } from "lucide-react";
+
+export default function SignUpForm({ 
+    onSwitchToSignIn, 
+    onBack,
+    role 
+}: { 
+    onSwitchToSignIn: () => void;
+    onBack?: () => void;
+    role: "freelancer" | "customer";
+}) {
   const router = useRouter();
   const { isPending } = authClient.useSession();
 
@@ -26,6 +36,8 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
           email: value.email,
           password: value.password,
           name: value.name,
+          // @ts-expect-error - Role field is added via better-auth config but types might need regeneration
+          role: role, // Pass role to backend
         },
         {
           onSuccess: () => {
@@ -53,10 +65,15 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
   }
 
   return (
-    <div className="w-full">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-primary">Create Account</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Create an account so you can explore all the existing jobs</p>
+    <div className="w-full animate-in fade-in slide-in-from-right-4 duration-300">
+      <div className="mb-8 text-center relative">
+        {onBack && (
+            <Button variant="ghost" size="icon" className="absolute left-0 top-0" onClick={onBack}>
+                <ArrowLeft className="h-5 w-5" />
+            </Button>
+        )}
+        <h1 className="text-3xl font-bold text-primary">Create {role === 'freelancer' ? 'Freelancer' : 'Client'} Account</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Enter your details to get started</p>
       </div>
 
       <form

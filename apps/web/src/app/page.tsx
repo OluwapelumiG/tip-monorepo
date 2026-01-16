@@ -4,13 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Search, Briefcase, TrendingUp, Users } from "lucide-react";
 
 export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-primary-foreground">
@@ -59,10 +56,7 @@ export default function Home() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,transparent_20%,var(--background)_80%)]" />
         </div>
 
-        <motion.div 
-            style={{ opacity, scale }}
-            className="container mx-auto px-6"
-        >
+        <div className="container mx-auto px-6">
           <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
             
             {/* Text Content */}
@@ -184,7 +178,7 @@ export default function Home() {
                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/20 blur-[100px] -z-10 rounded-full" />
             </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Stats Section */}
