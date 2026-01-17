@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/auth-client";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button } from "heroui-native";
 import { useState } from "react";
@@ -11,103 +12,105 @@ export default function RegisterScreen() {
   
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  
   const [loading, setLoading] = useState(false);
-
-  // Default to customer if no role selected (edge case)
-  const role = params.role || "customer"; 
+  const role = params.role || "customer";
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
-      return;
+        Alert.alert("Error", "Please fill in all fields");
+        return;
     }
-
     setLoading(true);
     try {
       const { data, error } = await authClient.signUp.email({
         email,
         password,
         name,
-        // Using 'image' field for role temporarily if better-auth doesn't support custom fields in type
-        // OR better yet, assuming better-auth is configured to accept 'role'
-        // If strict typing issues arise, we might need a different approach or verify better-auth config.
-        // For now, let's pass it and assume the schema supports it.
-        // @ts-ignore
+        // @ts-ignore - passing extra data, schema should handle if mapped or ignored
+        phoneNumber: phone,
         role: role, 
       });
-
-      if (error) {
-        Alert.alert("Registration Failed", error.message || "Something went wrong");
-      } else {
-        router.replace("/");
-      }
-    } catch (err) {
-      Alert.alert("Error", "Network or server error occurred");
-      console.error(err);
+      if (error) throw error;
+      router.replace("/");
+    } catch (err: any) {
+      Alert.alert("Registration Failed", err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white p-6 justify-center">
-      <View className="w-full max-w-sm mx-auto">
-        <Text className="text-3xl font-bold text-blue-600 mb-2 text-center">Create Account</Text>
-        <Text className="text-gray-500 text-center mb-8">
-          Join as a <Text className="font-bold text-blue-600 capitalize">{role}</Text>
+    <SafeAreaView className="flex-1 bg-white p-6 justify-center items-center">
+      <View className="w-full max-w-sm">
+        <Text className="text-3xl font-bold text-blue-700 text-center mb-4">Create Account</Text>
+        <Text className="text-gray-800 text-center font-medium mb-10 px-8">
+          Create an account so you can explore all the existing jobs
         </Text>
 
         <View className="space-y-4">
-          <View>
-            <Text className="mb-1 text-gray-700 font-medium">Full Name</Text>
-            <TextInput
-              className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-base"
-              placeholder="John Doe"
-              value={name}
-              onChangeText={setName}
+             <TextInput
+                className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-base text-gray-800"
+                placeholder="Full Name"
+                placeholderTextColor="#6b7280"
+                value={name}
+                onChangeText={setName}
             />
-          </View>
-
-          <View>
-            <Text className="mb-1 text-gray-700 font-medium">Email</Text>
-            <TextInput
-              className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-base"
-              placeholder="hello@example.com"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
+             <TextInput
+                className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-base text-gray-800"
+                placeholder="Phone Number"
+                placeholderTextColor="#6b7280"
+                keyboardType="phone-pad"
+                value={phone}
+                onChangeText={setPhone}
             />
-          </View>
-
-          <View>
-            <Text className="mb-1 text-gray-700 font-medium">Password</Text>
-            <TextInput
-              className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-base"
-              placeholder="••••••••"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
+             <TextInput
+                className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-base text-gray-800"
+                placeholder="Email Address"
+                placeholderTextColor="#6b7280"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
             />
-          </View>
+            <TextInput
+                className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-base text-gray-800"
+                placeholder="Password"
+                placeholderTextColor="#6b7280"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+            />
         </View>
 
         <Button
-          color="primary"
+          className="w-full mt-8 bg-blue-700 rounded-xl"
           size="lg"
           isLoading={loading}
           onPress={handleRegister}
-          className="w-full mt-8"
         >
-          Sign Up
+          <Text className="text-white font-bold text-lg">Sign up</Text>
         </Button>
 
-        <View className="flex-row justify-center mt-6">
-          <Text className="text-gray-500">Already have an account? </Text>
-          <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
-            <Text className="text-blue-600 font-bold">Log In</Text>
-          </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/(auth)/login")} className="mt-6">
+            <Text className="text-gray-600 text-center font-bold">Already have an account</Text>
+        </TouchableOpacity>
+
+        <View className="mt-14 items-center">
+            <Text className="text-blue-600 font-bold mb-6">Or continue with</Text>
+             <View className="flex-row space-x-4 gap-4">
+                <TouchableOpacity className="bg-gray-100 p-3 rounded-xl px-6">
+                    <Ionicons name="logo-google" size={24} color="black" />
+                </TouchableOpacity>
+                 <TouchableOpacity className="bg-gray-100 p-3 rounded-xl px-6">
+                    <Ionicons name="logo-facebook" size={24} color="black" />
+                </TouchableOpacity>
+                 <TouchableOpacity className="bg-gray-100 p-3 rounded-xl px-6">
+                    <Ionicons name="logo-apple" size={24} color="black" />
+                </TouchableOpacity>
+            </View>
         </View>
       </View>
     </SafeAreaView>
