@@ -40,15 +40,14 @@ export default function WelcomeScreen() {
             onPress={() => router.push("/(auth)/login")}
             className="flex-1 mr-2"
         >
-          Login
+          <Button.Label>Login</Button.Label>
         </Button>
         <Button
-          color="primary"
           size="lg"
           onPress={() => router.push("/(auth)/register")}
-          className="flex-1 ml-2"
+          className="flex-1 ml-2 bg-primary"
         >
-          Register
+          <Button.Label>Register</Button.Label>
         </Button>
       </View>
     </SafeAreaView>

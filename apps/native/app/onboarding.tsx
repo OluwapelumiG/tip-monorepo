@@ -4,10 +4,13 @@ import { Button } from "heroui-native";
 import { useRef, useState } from "react";
 import { Dimensions, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { withUniwind } from "uniwind";
 import logo from "@/assets/logo.png";
 
 const { width } = Dimensions.get("window");
+
+const StyledSafeAreaView = withUniwind(SafeAreaView);
+const StyledImage = withUniwind(Image);
 
 const slides = [
   {
@@ -44,7 +47,7 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <StyledSafeAreaView className="flex-1">
       <ScrollView
         ref={scrollViewRef}
         horizontal
@@ -57,7 +60,7 @@ export default function OnboardingScreen() {
         {slides.map((slide) => (
           <View key={slide.id} style={{ width }} className="items-center justify-center px-6">
             <View className="w-64 h-64 mb-10 items-center justify-center">
-              <Image
+              <StyledImage
                 source={slide.image}
                 style={{ width: "100%", height: "100%" }}
                 contentFit="contain"
@@ -88,14 +91,15 @@ export default function OnboardingScreen() {
         </View>
 
         <Button
-          color="primary"
           size="lg"
           onPress={handleNext}
-          className="w-full"
+          className="w-full h-16 mt-2 bg-blue-600 rounded"
         >
-          {activeIndex === slides.length - 1 ? "Get Started" : "Next"}
+          <Button.Label>
+            {activeIndex === slides.length - 1 ? "Get Started" : "Next"}
+          </Button.Label>
         </Button>
       </View>
-    </SafeAreaView>
+    </StyledSafeAreaView>
   );
 }

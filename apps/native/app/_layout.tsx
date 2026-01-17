@@ -1,4 +1,4 @@
-import "@/global.css";
+import "../global.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { HeroUINativeProvider } from "heroui-native";
@@ -16,9 +16,14 @@ function StackLayout() {
   return (
     <Stack screenOptions={{}}>
       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen name="welcome" options={{ headerShown: false }} />
+      
+      {/* Auth Routes */}
+      <Stack.Screen name="(auth)/role-selection" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/register" options={{ headerShown: false }} />
+      
+      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen name="modal" options={{ title: "Modal", presentation: "modal" }} />
     </Stack>
   );
