@@ -6,8 +6,14 @@
     "web": {
       "bundler": "metro"
     },
-    "name": "illtip-monorepo",
-    "slug": "illtip-monorepo",
+    "name": "I'll Tip",
+    "slug": "illtip",
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "plugins": ["expo-font"],
     "experiments": {
       "typedRoutes": true,
