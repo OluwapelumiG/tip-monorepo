@@ -1,7 +1,9 @@
-import React, { createContext, useCallback, useContext, useMemo } from "react";
+import * as SecureStore from "expo-secure-store";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Uniwind, useUniwind } from "uniwind";
 
 type ThemeName = "light" | "dark";
+const THEME_STORAGE_KEY = "illtip-app-theme";
 
 type AppThemeContextType = {
   currentTheme: string;
@@ -15,6 +17,28 @@ const AppThemeContext = createContext<AppThemeContextType | undefined>(undefined
 
 export const AppThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useUniwind();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load saved theme on mount
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const savedTheme = await SecureStore.getItemAsync(THEME_STORAGE_KEY);
+        if (savedTheme === "dark" || savedTheme === "light") {
+          Uniwind.setTheme(savedTheme);
+        } else {
+          // Default to light if no theme saved
+          Uniwind.setTheme("light");
+        }
+      } catch (error) {
+        console.error("Failed to load theme:", error);
+        Uniwind.setTheme("light");
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+    loadTheme();
+  }, []);
 
   const isLight = useMemo(() => {
     return theme === "light";
@@ -24,13 +48,19 @@ export const AppThemeProvider = ({ children }: { children: React.ReactNode }) =>
     return theme === "dark";
   }, [theme]);
 
-  const setTheme = useCallback((newTheme: ThemeName) => {
+  const setTheme = useCallback(async (newTheme: ThemeName) => {
     Uniwind.setTheme(newTheme);
+    try {
+      await SecureStore.setItemAsync(THEME_STORAGE_KEY, newTheme);
+    } catch (error) {
+      console.error("Failed to save theme:", error);
+    }
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    Uniwind.setTheme(theme === "light" ? "dark" : "light");
-  }, [theme]);
+  const toggleTheme = useCallback(async () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  }, [theme, setTheme]);
 
   const value = useMemo(
     () => ({
@@ -42,6 +72,9 @@ export const AppThemeProvider = ({ children }: { children: React.ReactNode }) =>
     }),
     [theme, isLight, isDark, setTheme, toggleTheme],
   );
+
+  // Prevent rendering children until theme is loaded to avoid flash of wrong theme
+  if (!isLoaded) return null;
 
   return <AppThemeContext.Provider value={value}>{children}</AppThemeContext.Provider>;
 };

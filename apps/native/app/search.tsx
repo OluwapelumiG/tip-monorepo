@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
-const ITEM_WIDTH = (width - 48) / 3; // Grid item width
+const ITEM_WIDTH = (width - 50) / 3; // Grid item width
 
 type SearchTab = "Posts" | "Users" | "Jobs";
 
@@ -109,10 +109,10 @@ export default function SearchScreen() {
   return (
     <SafeAreaView
       style={{ flex: 1 }}
-      className="flex-1 bg-white dark:bg-black px-4"
+      className="flex-1 bg-white dark:bg-black px-2"
     >
       {/* Header */}
-      <View className="py-4">
+      <View className="py-2 px-2">
         <Text className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">
           Search for users,
         </Text>
@@ -122,13 +122,13 @@ export default function SearchScreen() {
       </View>
 
       {/* Search Input */}
-      <View className="flex-row items-center mb-6 space-x-3">
+      <View className="flex-row items-center mb-6 space-x-3 px-2">
         <View className="flex-1 flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-full px-4 py-3 shadow-sm">
           <Ionicons name="search-outline" size={20} className="text-gray-400" />
           <TextInput
             placeholder="Search for Sector or Area..."
             placeholderTextColor="#9CA3AF"
-            className="flex-1 ml-2 text-gray-900 dark:text-white text-base"
+            className="flex-1 ml-2 text-gray-900 dark:text-white text-base rounded-2xl"
             value={searchText}
             onChangeText={setSearchText}
           />
@@ -139,7 +139,7 @@ export default function SearchScreen() {
       </View>
 
       {/* Tabs */}
-      <View className="flex-row mb-6 space-x-3">
+      <View className="flex-row mb-6 space-x-3 px-2">
         {(["Jobs", "Posts", "Users"] as SearchTab[]).map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -164,7 +164,7 @@ export default function SearchScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView className="px-2" showsVerticalScrollIndicator={false}>
           {renderContent()}
       </ScrollView>
        {/* Bottom spacing for tab bar */}

@@ -9,12 +9,13 @@ import { AppThemeProvider } from "@/contexts/app-theme-context";
 import { queryClient } from "@/utils/orpc";
 
 export const unstable_settings = {
-  initialRouteName: "onboarding", // Use onboarding as entry
+  // initialRouteName: "onboarding", // Removed to let index.tsx handle entry logic
 };
 
 function StackLayout() {
   return (
     <Stack screenOptions={{}}>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       <Stack.Screen name="welcome" options={{ headerShown: false }} />
       

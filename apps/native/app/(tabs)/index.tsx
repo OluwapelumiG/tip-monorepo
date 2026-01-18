@@ -6,6 +6,9 @@ import { Link } from "expo-router";
 import React, { useState } from "react";
 import { FlatList, Image, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import logo from "@/assets/logo.png";
+
+
 
 const FEED_DATA = [
   {
@@ -113,15 +116,13 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="flex-1 bg-white dark:bg-black" edges={['top']}>
-      {/* Header */}
-      <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-50 dark:border-gray-800">
-           <View className="w-8" /> 
-           <View className="flex-row items-center">
-               <View className="h-6 w-6 rounded-full bg-green-400 mr-2 items-center justify-center">
-                  <Ionicons name="earth" size={16} color="white" />
-               </View>
-               <Text className="text-xl font-bold text-gray-800 dark:text-white">i'llTip</Text>
-           </View>
+       {/* Header */}
+       <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-50 dark:border-gray-800">
+            {/* <View className="w-8" />  */}
+            <View className="flex-row items-center">
+                <Image source={logo} style={{ width: 42, height: 42 }} resizeMode="contain" className="mr-2" />
+            </View>
+            <Text className="text-xl font-bold text-gray-800 dark:text-white">i'll Tip</Text>
            <TouchableOpacity>
                <Ionicons name="notifications-outline" size={26} className="text-gray-900 dark:text-white" />
            </TouchableOpacity>

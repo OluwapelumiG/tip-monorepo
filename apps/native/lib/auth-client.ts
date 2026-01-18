@@ -8,8 +8,8 @@ export const authClient = createAuthClient({
   baseURL: env.EXPO_PUBLIC_SERVER_URL,
   plugins: [
     expoClient({
-      scheme: Constants.expoConfig?.scheme as string,
-      storagePrefix: Constants.expoConfig?.scheme as string,
+      scheme: "illtip-monorepo", // Hardcoded to ensure reliability
+      storagePrefix: "illtip-monorepo",
       storage: SecureStore,
     }),
   ],
