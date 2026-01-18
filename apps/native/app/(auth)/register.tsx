@@ -42,23 +42,23 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white p-6 justify-center">
-      <View className="w-full">
-        <Text className="text-3xl font-bold text-blue-700 text-center mb-4">Create Account</Text>
-        <Text className="text-gray-900 text-center font-bold text-lg mb-10 px-8 leading-6">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <View className="flex-1 justify-center w-full px-8">
+        <Text className="text-4xl font-extrabold text-blue-700 text-center mb-3 tracking-tight">Create Account</Text>
+        <Text className="text-gray-900 text-center text-lg font-bold mb-10 px-4 leading-6">
           Create an account so you can explore all the existing jobs
         </Text>
 
         <View className="space-y-4">
              <TextInput
-                className="bg-blue-50 border-2 border-transparent focus:border-blue-500 rounded-xl p-4 text-base text-gray-800 font-medium"
+                className="bg-blue-50 mt-4 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
                 placeholder="Full Name"
                 placeholderTextColor="#6b7280"
                 value={name}
                 onChangeText={setName}
             />
              <TextInput
-                className="bg-blue-50 border-2 border-transparent focus:border-blue-500 rounded-xl p-4 text-base text-gray-800 font-medium"
+                className="bg-blue-50 mt-4 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
                 placeholder="Phone Number"
                 placeholderTextColor="#6b7280"
                 keyboardType="phone-pad"
@@ -66,7 +66,7 @@ export default function RegisterScreen() {
                 onChangeText={setPhone}
             />
              <TextInput
-                className="bg-blue-50 border-2 border-transparent focus:border-blue-500 rounded-xl p-4 text-base text-gray-800 font-medium"
+                className="bg-blue-50 mt-4 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
                 placeholder="Email Address"
                 placeholderTextColor="#6b7280"
                 keyboardType="email-address"
@@ -75,7 +75,7 @@ export default function RegisterScreen() {
                 onChangeText={setEmail}
             />
             <TextInput
-                className="bg-blue-50 border-2 border-transparent focus:border-blue-500 rounded-xl p-4 text-base text-gray-800 font-medium"
+                className="bg-blue-50 mt-4 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
                 placeholder="Password"
                 placeholderTextColor="#6b7280"
                 secureTextEntry
@@ -85,36 +85,36 @@ export default function RegisterScreen() {
         </View>
 
         <Pressable
-          className={`w-full mt-8 bg-blue-700 rounded-xl py-4 items-center justify-center shadow-lg shadow-blue-200 ${loading ? "opacity-70" : "active:opacity-80"}`}
+          className={`w-full mt-10 bg-blue-700 rounded-xl py-4 items-center justify-center shadow-lg shadow-blue-300 ${loading ? "opacity-70" : "active:opacity-80"}`}
           onPress={handleRegister}
           disabled={loading}
         >
           {loading ? (
              <ActivityIndicator color="white" />
           ) : (
-             <Text className="text-white font-bold text-lg">Sign up</Text>
+             <Text className="text-white font-bold text-xl">Sign up</Text>
           )}
         </Pressable>
 
         <TouchableOpacity onPress={() => router.push("/(auth)/login")} className="mt-8">
-            <Text className="text-gray-600 text-center font-bold">Already have an account</Text>
+            <Text className="text-gray-900 font-bold text-center text-base">Already have an account</Text>
         </TouchableOpacity>
+      </View>
 
-        <View className="mt-14 items-center">
+        <View className="pb-12 items-center">
             <Text className="text-blue-600 font-bold mb-6">Or continue with</Text>
-             <View className="flex-row space-x-4 gap-4">
-                <TouchableOpacity className="bg-gray-100 p-3 rounded-xl px-6">
+             <View className="flex-row gap-6">
+                <TouchableOpacity className="bg-gray-100 p-4 rounded-xl px-8 shadow-sm">
                     <Ionicons name="logo-google" size={24} color="black" />
                 </TouchableOpacity>
-                 <TouchableOpacity className="bg-gray-100 p-3 rounded-xl px-6">
+                 <TouchableOpacity className="bg-gray-100 p-4 rounded-xl px-8 shadow-sm">
                     <Ionicons name="logo-facebook" size={24} color="black" />
                 </TouchableOpacity>
-                 <TouchableOpacity className="bg-gray-100 p-3 rounded-xl px-6">
+                 <TouchableOpacity className="bg-gray-100 p-4 rounded-xl px-8 shadow-sm">
                     <Ionicons name="logo-apple" size={24} color="black" />
                 </TouchableOpacity>
             </View>
         </View>
-      </View>
     </SafeAreaView>
   );
 }

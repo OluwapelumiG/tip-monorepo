@@ -32,15 +32,15 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white p-6 justify-center">
-      <View className="w-full">
-        <Text className="text-4xl font-bold text-blue-700 text-center mb-3">Login here</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <View className="flex-1 justify-center w-full px-8">
+        <Text className="text-4xl font-extrabold text-blue-700 text-center mb-3 tracking-tight">Login here</Text>
         <Text className="text-gray-900 text-center text-xl font-bold mb-12 leading-7">
           Welcome back you've{"\n"}been missed!
         </Text>
 
         <View className="space-y-6">
-            <View>
+            <View className="mt-4">
                  <TextInput
                     className="bg-blue-50 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
                     placeholder="Email"
@@ -51,7 +51,7 @@ export default function LoginScreen() {
                     onChangeText={setEmail}
                  />
             </View>
-            <View>
+            <View className="mt-4">
                  <TextInput
                     className="bg-blue-50 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
                     placeholder="Password"
@@ -65,7 +65,7 @@ export default function LoginScreen() {
         </View>
 
         <Pressable
-          className={`w-full mt-10 bg-blue-700 rounded-xl py-4 items-center justify-center shadow-lg shadow-blue-200 ${loading ? "opacity-70" : "active:opacity-80"}`}
+          className={`w-full mt-10 bg-blue-700 rounded-xl py-4 items-center justify-center shadow-lg shadow-blue-300 ${loading ? "opacity-70" : "active:opacity-80"}`}
           onPress={handleLogin}
           disabled={loading}
         >
@@ -79,8 +79,9 @@ export default function LoginScreen() {
         <TouchableOpacity onPress={() => router.push("/(auth)/register")} className="mt-8">
             <Text className="text-gray-900 font-bold text-center text-base">Create new account</Text>
         </TouchableOpacity>
+      </View>
 
-        <View className="mt-20 items-center">
+      <View className="pb-12 items-center">
             <Text className="text-blue-600 font-bold mb-8">Or continue with</Text>
             
             <View className="flex-row gap-6">
@@ -95,7 +96,6 @@ export default function LoginScreen() {
                 </TouchableOpacity>
             </View>
         </View>
-      </View>
     </SafeAreaView>
   );
 }

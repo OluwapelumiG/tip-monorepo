@@ -93,9 +93,9 @@ export default function OnboardingScreen() {
         <Button
           size="lg"
           onPress={handleNext}
-          className="w-full h-16 mt-2 bg-blue-600 rounded"
+          className="w-full h-16 mt-2 text-white bg-blue-600 rounded"
         >
-          <Button.Label>
+          <Button.Label className="text-white">
             {activeIndex === slides.length - 1 ? "Get Started" : "Next"}
           </Button.Label>
         </Button>
