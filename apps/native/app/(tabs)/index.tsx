@@ -2,6 +2,7 @@ import { Card } from "heroui-native";
 import { Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import React, { useState } from "react";
 import { FlatList, Image, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -144,14 +145,14 @@ export default function DashboardScreen() {
 
       {/* Search Bar */}
       <View className="px-4 flex-row items-center mb-4 mt-2">
-           <View className="flex-1 flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-3 mr-3 shadow-sm">
-                <Ionicons name="search-outline" size={20} color="#9CA3AF" />
-                <TextInput 
-                    placeholder="Search for users or jobs..." 
-                    className="flex-1 ml-2 text-gray-700 dark:text-white"
-                    placeholderTextColor="#9CA3AF"
-                />
-           </View>
+           <Link href="/search" asChild>
+              <TouchableOpacity className="flex-1 flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-3 mr-3 shadow-sm">
+                    <Ionicons name="search-outline" size={20} color="#9CA3AF" />
+                    <Text className="flex-1 ml-2 text-gray-400 text-base">
+                        Search for users or jobs...
+                    </Text>
+              </TouchableOpacity>
+           </Link>
            <TouchableOpacity className="border border-gray-200 dark:border-gray-800 rounded-xl p-3 shadow-sm bg-white dark:bg-gray-900">
                 <Ionicons name="add" size={24} className="text-black dark:text-white" />
            </TouchableOpacity>

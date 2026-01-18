@@ -19,16 +19,16 @@ export default function TabLayout() {
           fontWeight: "600",
         },
         tabBarStyle: {
-          backgroundColor: themeColorBackground,
+          backgroundColor: themeColorBackground, // automatically changes based on theme
           borderTopWidth: 1,
-          borderTopColor: "#E5E7EB", // light gray
+          borderTopColor: themeColorBackground === "#000000" ? "#1F2937" : "#E5E7EB", // dark: gray-800, light: gray-200
           height: 70,
           paddingBottom: 10,
           paddingTop: 8,
           paddingHorizontal: 16,
         },
-        tabBarActiveTintColor: "#2563EB", // blue-600
-        tabBarInactiveTintColor: "#6B7280", // gray-500
+        tabBarActiveTintColor: "#2563EB", // blue-600 (consistent)
+        tabBarInactiveTintColor: themeColorForeground === "#FFFFFF" ? "#9CA3AF" : "#6B7280", // dark: gray-400, light: gray-500
       }}
     >
       <Tabs.Screen
