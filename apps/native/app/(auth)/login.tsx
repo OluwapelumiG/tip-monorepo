@@ -23,7 +23,7 @@ export default function LoginScreen() {
         password,
       });
       if (error) throw error;
-      router.replace("/");
+      router.replace("/(tabs)");
     } catch (err: any) {
       Alert.alert("Login Failed", err.message);
     } finally {

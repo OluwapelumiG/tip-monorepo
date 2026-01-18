@@ -33,7 +33,7 @@ export default function RegisterScreen() {
         role: role, 
       });
       if (error) throw error;
-      router.replace("/");
+      router.replace("/(tabs)");
     } catch (err: any) {
       Alert.alert("Registration Failed", err.message);
     } finally {
