@@ -152,6 +152,11 @@ export default function CreateScreen() {
                         onChangeText={setJobDescription}
                     />
                     <Text className="text-gray-400 text-xs mb-6">Provide all necessary information for applicants.</Text>
+
+                    <Text className="text-base font-bold text-black dark:text-white mb-2">Images (Optional)</Text>
+                    <TouchableOpacity className="w-full aspect-video bg-gray-100 dark:bg-gray-800 rounded-3xl mb-6 items-center justify-center border border-dashed border-gray-300 dark:border-gray-700">
+                        <Text className="text-black dark:text-white font-bold text-lg">Upload photos</Text>
+                    </TouchableOpacity>
                 </View>
             )}
 
