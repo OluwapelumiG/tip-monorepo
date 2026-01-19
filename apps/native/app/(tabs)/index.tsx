@@ -115,58 +115,60 @@ export default function DashboardScreen() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="flex-1 bg-white dark:bg-black" edges={['top']}>
-       {/* Header */}
-       <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-50 dark:border-gray-800">
-            {/* <View className="w-8" />  */}
-            <View className="flex-row items-center">
-                <Image source={logo} style={{ width: 42, height: 42 }} resizeMode="contain" className="mr-2" />
-            </View>
-            <Text className="text-xl font-bold text-gray-800 dark:text-white">i'll Tip</Text>
-           <TouchableOpacity>
-               <Ionicons name="notifications-outline" size={26} className="text-gray-900 dark:text-white" />
-           </TouchableOpacity>
-      </View>
+    <View className="flex-1 bg-white dark:bg-black" style={{ flex: 1 }}>
+     <SafeAreaView style={{ flex: 1 }} className="flex-1 bg-white dark:bg-black" edges={['top']}>
+          {/* Header */}
+          <View className="flex-row justify-between items-center bg-white dark:bg-black px-4 py-3 border-b border-gray-50 dark:border-gray-800">
+               {/* <View className="w-8" />  */}
+               <View className="flex-row items-center">
+                    <Image source={logo} style={{ width: 42, height: 42 }} resizeMode="contain" className="mr-2" />
+               </View>
+               <Text className="text-xl font-bold text-gray-800 dark:text-white">i'll Tip</Text>
+               <TouchableOpacity>
+                    <Ionicons name="notifications-outline" size={26} className="text-gray-900 dark:text-white" />
+               </TouchableOpacity>
+          </View>
 
-      {/* Top Tabs */}
-      <View className="flex-row px-4 mt-4 mb-2">
-           <TouchableOpacity 
-              onPress={() => setActiveTab("Trending")}
-              className={`flex-1 items-center py-2 rounded-lg ${activeTab === "Trending" ? "bg-blue-600" : "bg-transparent"}`}
-            >
-               <Text className={`font-bold ${activeTab === "Trending" ? "text-white" : "text-gray-900 dark:text-gray-400"}`}>Trending</Text>
-           </TouchableOpacity>
-           <TouchableOpacity 
-              onPress={() => setActiveTab("Explore")}
-              className={`flex-1 items-center py-2 rounded-lg ${activeTab === "Explore" ? "bg-blue-600" : "bg-transparent"}`}
-            >
-               <Text className={`font-bold ${activeTab === "Explore" ? "text-white" : "text-gray-900 dark:text-gray-400"}`}>Explore</Text>
-           </TouchableOpacity>
-      </View>
+          {/* Top Tabs */}
+          <View className="flex-row px-4 mt-4 mb-2">
+               <TouchableOpacity 
+               onPress={() => setActiveTab("Trending")}
+               className={`flex-1 items-center py-2 rounded-lg ${activeTab === "Trending" ? "bg-blue-600" : "bg-transparent"}`}
+               >
+                    <Text className={`font-bold ${activeTab === "Trending" ? "text-white" : "text-gray-900 dark:text-gray-400"}`}>Trending</Text>
+               </TouchableOpacity>
+               <TouchableOpacity 
+               onPress={() => setActiveTab("Explore")}
+               className={`flex-1 items-center py-2 rounded-lg ${activeTab === "Explore" ? "bg-blue-600" : "bg-transparent"}`}
+               >
+                    <Text className={`font-bold ${activeTab === "Explore" ? "text-white" : "text-gray-900 dark:text-gray-400"}`}>Explore</Text>
+               </TouchableOpacity>
+          </View>
 
-      {/* Search Bar */}
-      <View className="px-4 flex-row items-center mb-4 mt-2">
-           <Link href="/search" asChild>
-              <TouchableOpacity className="flex-1 flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-3 mr-3 shadow-sm">
-                    <Ionicons name="search-outline" size={20} color="#9CA3AF" />
-                    <Text className="flex-1 ml-2 text-gray-400 text-base">
-                        Search for users or jobs...
-                    </Text>
-              </TouchableOpacity>
-           </Link>
-           <TouchableOpacity className="border border-gray-200 dark:border-gray-800 rounded-xl p-3 shadow-sm bg-white dark:bg-gray-900">
-                <Ionicons name="add" size={24} className="text-black dark:text-white" />
-           </TouchableOpacity>
-      </View>
+          {/* Search Bar */}
+          <View className="px-6 mb-2 flex-row items-center space-x-3 gap-3 mt-2">
+               <Link href="/search" asChild>
+                    <TouchableOpacity className="flex-1 flex-row items-center bg-transparent border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-5">
+                         <Ionicons name="search-outline" size={24} color="#9ca3af" />
+                         <Text className="flex-1 ml-3 text-base text-gray-400">
+                              Search for users or jobs...
+                         </Text>
+                    </TouchableOpacity>
+               </Link>
+               <TouchableOpacity className="w-14 h-14 border border-gray-200 dark:border-gray-800 rounded-2xl items-center justify-center bg-transparent">
+                    <Ionicons name="add" size={24} className="text-black dark:text-white" />
+               </TouchableOpacity>
+          </View>
 
-      {/* Feed List */}
-      <FlatList
-        data={FEED_DATA}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
-    </SafeAreaView>
+          {/* Feed List */}
+          <FlatList
+          data={FEED_DATA}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          />
+     </SafeAreaView>
+    </View>
   );
 }

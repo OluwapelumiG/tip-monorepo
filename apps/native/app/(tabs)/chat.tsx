@@ -41,6 +41,69 @@ const CHAT_USERS = [
     avatar: "https://i.pravatar.cc/150?u=5",
     isOnline: true,
   },
+  {
+    id: "6",
+    name: "Username 6",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=6",
+    isOnline: true,
+  },
+  {
+    id: "7",
+    name: "Username 7",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=7",
+    isOnline: true,
+  },
+  {
+    id: "8",
+    name: "Username 8",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=8",
+    isOnline: true,
+  },
+  {
+    id: "9",
+    name: "Username 9",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=9",
+    isOnline: true,
+  },
+  {
+    id: "10",
+    name: "Username 10",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=10",
+    isOnline: true,
+  },
+  {
+    id: "11",
+    name: "Username 11",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=11",
+    isOnline: true,
+  },
+  {
+    id: "12",
+    name: "Username 12",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=12",
+    isOnline: true,
+  },
+  {
+    id: "13",
+    name: "Username 13",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=13",
+    isOnline: true,
+  },
+  {
+    id: "14",
+    name: "Username 14",
+    lastMessage: "No worries, on progress",
+    avatar: "https://i.pravatar.cc/150?u=14",
+    isOnline: true,
+  },
 ];
 
 export default function ChatScreen() {
@@ -77,30 +140,17 @@ export default function ChatScreen() {
   );
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-black">
-      <SafeAreaView className="flex-1" edges={["top"]}>
-        {/* Header Area with customized background */}
-        <View className="px-6 pt-2 pb-6 bg-gray-50 dark:bg-black">
-            <View className="flex-row justify-between items-start mb-6">
-                <View className="flex-row items-center">
-                    <TouchableOpacity 
-                        className="mr-3 p-1 rounded-full bg-blue-600 items-center justify-center"
-                        onPress={() => router.back()}
-                    >
-                        <Ionicons name="arrow-back" size={20} color="white" />
-                    </TouchableOpacity>
-                    <View>
-                        <Text className="text-2xl font-bold text-blue-800 dark:text-blue-400 leading-tight">
-                            Connect With{'\n'}Other Users!
-                        </Text>
-                    </View>
-                </View>
-                {/* Profile Placeholder */}
-                <View className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700" />
-            </View>
+    <View className="flex-1 bg-gray-50 dark:bg-black" style={{ flex: 1 }}>
+      <SafeAreaView className="flex-1" edges={["top"]} style={{ flex: 1 }}>
+        {/* Header Section */}
+        <View className="px-6 pt-2 pb-4 bg-gray-50 dark:bg-black">
+          <Text className="text-4xl font-bold text-black dark:text-white leading-tight">
+            Connect with{'\n'}other Users!
+          </Text>
+        </View>
 
             {/* Search Bar */}
-            <View className="flex-row items-center bg-blue-700 rounded-full px-4 py-3 shadow-md">
+            {/* <View className="flex-row items-center bg-blue-700 rounded-full px-4 py-3 shadow-md">
                 <Ionicons name="search" size={20} color="white" />
                 <TextInput 
                     placeholder="Search chat..." 
@@ -109,18 +159,32 @@ export default function ChatScreen() {
                     value={search}
                     onChangeText={setSearch}
                 />
+            </View> */}
+
+        {/* Search Bar */}
+        <View className="px-6 mb-2 flex-row items-center space-x-3 gap-3">
+            <View className="flex-1 flex-row items-center bg-transparent border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-3.5">
+                <Ionicons name="search-outline" size={24} color="#9ca3af" />
+                <TextInput 
+                placeholder="Search for Sector or Area..." 
+                placeholderTextColor="#9ca3af"
+                className="flex-1 ml-3 text-base text-black dark:text-white"
+                />
             </View>
+            <TouchableOpacity className="w-14 h-14 border border-gray-200 dark:border-gray-800 rounded-2xl items-center justify-center">
+                    <Ionicons name="options-outline" size={24} color="black" className="dark:text-white" />
+            </TouchableOpacity>
         </View>
 
         {/* Content Area - Rounded White Card */}
-        <View className="flex-1 bg-white dark:bg-gray-900 rounded-t-[30px] px-6 pt-6 shadow-sm">
+        <View className="flex-1 bg-white dark:bg-gray-900 rounded-t-[30px] px-6 pt-2 shadow-sm" style={{ flex: 1 }}>
             <FlatList
                 className="flex-1"
                 data={filteredUsers}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 20 }}
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
                 ListEmptyComponent={() => (
                 <View className="flex-1 items-center justify-center mt-4">
                     {/* Empty State Graphics */}

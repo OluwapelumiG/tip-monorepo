@@ -42,9 +42,9 @@ export default function TabLayout() {
         }}
       />
        <Tabs.Screen
-        name="two"
+        name="jobs"
         options={{
-          title: "Documents",
+          title: "Jobs",
           tabBarLabel: () => null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="document-text-outline" size={28} color={color} />

@@ -62,10 +62,10 @@ export default function ProfileScreen() {
 
           {/* Stats Buttons */}
           <View className="flex-row px-6 mt-6 space-x-4 justify-between">
-               <TouchableOpacity className="flex-1 border border-blue-600 rounded-xl py-3 items-center">
+               <TouchableOpacity className="flex-1 border border-blue-600 rounded-xl py-3 mx-2 items-center">
                    <Text className="text-gray-900 dark:text-gray-300 font-bold text-base">4.5K Friends</Text>
                </TouchableOpacity>
-               <TouchableOpacity className="flex-1 border border-blue-600 rounded-xl py-3 items-center flex-row justify-center">
+               <TouchableOpacity className="flex-1 border border-blue-600 rounded-xl py-3 mx-2 items-center flex-row justify-center">
                    <Ionicons name="star" size={18} color="#FBBF24" style={{ marginRight: 6 }} />
                    <Text className="text-gray-900 dark:text-gray-300 font-bold text-base">4.2K Reviews</Text>
                </TouchableOpacity>
