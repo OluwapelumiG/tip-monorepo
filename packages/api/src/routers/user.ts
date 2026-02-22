@@ -1,6 +1,6 @@
 import { z } from "zod";
 import prisma from "@illtip/db";
-import { publicProcedure } from "../index";
+import { protectedProcedure, publicProcedure } from "../index";
 import { ORPCError } from "@orpc/server";
 
 export const userRouter = {
@@ -39,5 +39,27 @@ export const userRouter = {
           reviews: "0", // Placeholder
         },
       };
+    }),
+
+  updateProfile: protectedProcedure
+    .input(z.object({
+      name: z.string().min(2).optional(),
+      image: z.string().url().optional().or(z.string().length(0)),
+    }))
+    .handler(async ({ input, context }) => {
+      const user = await prisma.user.update({
+        where: { id: context.user.id },
+        data: {
+          name: input.name,
+          image: input.image === "" ? null : input.image,
+        },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      });
+
+      return user;
     }),
 };

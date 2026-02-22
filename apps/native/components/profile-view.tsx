@@ -14,6 +14,7 @@ interface ProfileViewProps {
 
 export function ProfileView({ userId, isOwnProfile = false, onOpenSettings }: ProfileViewProps) {
   const router = useRouter();
+  const { width } = useWindowDimensions();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const ITEM_WIDTH = (width - 48) / 3; // 3 items per row with gaps

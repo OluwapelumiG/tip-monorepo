@@ -121,7 +121,7 @@ export function SettingsDrawer({ visible, onClose }: SettingsDrawerProps) {
         </Pressable>
         
         <View style={styles.drawerContent} className="bg-white dark:bg-black shadow-2xl">
-          <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
+          <SafeAreaView className="flex-1" style={{ flex: 1 }} edges={['top', 'bottom']}>
             <View className="flex-row items-center px-6 pt-12 pb-4 border-b border-gray-50 dark:border-gray-900 justify-between">
               <TouchableOpacity onPress={onClose} className="p-2 -ml-2">
                 <Ionicons name="arrow-back" size={24} color={isDark ? "#FFFFFF" : "#1F2937"} />
@@ -133,7 +133,8 @@ export function SettingsDrawer({ visible, onClose }: SettingsDrawerProps) {
             <ScrollView 
               showsVerticalScrollIndicator={false} 
               className="flex-1"
-              contentContainerStyle={{ paddingBottom: 60 }}
+              style={{ flex: 1 }}
+              contentContainerStyle={{ paddingBottom: 80 }}
             >
               <View className="items-center py-8 px-6">
                 <View className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4 overflow-hidden border border-gray-100 dark:border-gray-800">
@@ -152,13 +153,13 @@ export function SettingsDrawer({ visible, onClose }: SettingsDrawerProps) {
                 
                 <TouchableOpacity 
                     className="border border-gray-200 dark:border-gray-800 rounded-xl px-10 py-2.5"
-                    onPress={() => console.log("Edit Profile Pressed")}
+                    onPress={() => navigateTo("/settings/edit-profile")}
                 >
                   <Text className="font-bold text-gray-900 dark:text-white">Edit Profile</Text>
                 </TouchableOpacity>
               </View>
 
-              <View className="px-6 border-t border-gray-100 dark:border-gray-900 pt-4">
+              <View className="px-6 border-t border-gray-100 dark:border-gray-900 pt-4" style={{ flex: 1 }}>
                 {SETTINGS_ITEMS.map((item) => (
                   <SettingsItem 
                     key={item.title}

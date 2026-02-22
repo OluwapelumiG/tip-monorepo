@@ -28,6 +28,7 @@ function StackLayout() {
       <Stack.Screen name="(drawer)" />
       <Stack.Screen name="user/[id]" />
       <Stack.Screen name="post/[id]" />
+      <Stack.Screen name="settings/edit-profile" />
       <Stack.Screen name="settings/customization" />
       <Stack.Screen name="settings/language" />
       <Stack.Screen name="settings/finance" />
