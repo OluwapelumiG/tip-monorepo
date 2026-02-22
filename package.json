@@ -1,5 +1,5 @@
 {
-  "name": "illtip-monorepo",
+  "name": "illtip",
   "private": true,
   "workspaces": {
     "packages": [
@@ -19,7 +19,14 @@
       "@orpc/tanstack-query": "^1.12.2",
       "@orpc/client": "^1.12.2",
       "@tanstack/react-query": "^5.90.12",
-      "@better-auth/expo": "^1.4.9"
+      "@better-auth/expo": "^1.4.9",
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0",
+      "@types/react": "^19.1.0",
+      "@types/react-dom": "^19.1.0",
+      "pg": "^8.13.1",
+      "@types/pg": "^8.11.10",
+      "@prisma/adapter-pg": "^7.2.0"
     }
   },
   "type": "module",
@@ -30,18 +37,19 @@
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "db:push": "turbo -F @illtip-monorepo/db db:push",
-    "db:studio": "turbo -F @illtip-monorepo/db db:studio",
-    "db:generate": "turbo -F @illtip-monorepo/db db:generate",
-    "db:migrate": "turbo -F @illtip-monorepo/db db:migrate"
+    "db:push": "turbo -F @illtip/db db:push",
+    "db:studio": "turbo -F @illtip/db db:studio",
+    "db:generate": "turbo -F @illtip/db db:generate",
+    "db:migrate": "turbo -F @illtip/db db:migrate"
   },
   "dependencies": {
-    "@illtip-monorepo/env": "workspace:*",
+    "@illtip/env": "workspace:*",
     "dotenv": "catalog:",
+    "expo-video": "^3.0.16",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@illtip-monorepo/config": "workspace:*",
+    "@illtip/config": "workspace:*",
     "@types/bun": "catalog:",
     "dotenv-cli": "^11.0.0",
     "turbo": "^2.6.3",

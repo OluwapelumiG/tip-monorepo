@@ -1,6 +1,6 @@
 import type { Context as HonoContext } from "hono";
 
-import { auth } from "@illtip-monorepo/auth";
+import { auth } from "@illtip/auth";
 
 export type CreateContextOptions = {
   context: HonoContext;

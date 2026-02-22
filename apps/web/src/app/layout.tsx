@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-
 import { Geist, Geist_Mono } from "next/font/google";
-
 import "../index.css";
 import Providers from "@/components/providers";
 
@@ -16,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "illtip-monorepo",
-  description: "illtip-monorepo",
+  title: "illtip",
+  description: "illtip",
 };
 
 export default function RootLayout({

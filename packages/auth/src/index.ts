@@ -1,6 +1,6 @@
 import { expo } from "@better-auth/expo";
-import prisma from "@illtip-monorepo/db";
-import { env } from "@illtip-monorepo/env/server";
+import prisma from "@illtip/db";
+import { env } from "@illtip/env/server";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 

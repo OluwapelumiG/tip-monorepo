@@ -1,15 +1,12 @@
+import { auth } from "@illtip/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, FileText, CheckCircle, Clock } from "lucide-react";
 
 export default async function DashboardPage() {
-  const session = await authClient.getSession({
-    fetchOptions: {
-      headers: await headers(),
-      // throw: false to handle redirect manually or let it return null
-    },
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
 
   if (!session?.user) {

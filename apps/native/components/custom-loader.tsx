@@ -9,7 +9,7 @@ import Animated, {
   Easing,
   cancelAnimation,
 } from "react-native-reanimated";
-import logo from "@/assets/logo.png";
+import { logo } from "@illtip/assets";
 
 interface CustomLoaderProps {
   visible?: boolean;

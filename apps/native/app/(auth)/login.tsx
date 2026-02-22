@@ -9,6 +9,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -51,15 +52,25 @@ export default function LoginScreen() {
                     onChangeText={setEmail}
                  />
             </View>
-            <View className="mt-4">
+            <View className="mt-4 relative">
                  <TextInput
-                    className="bg-blue-50 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
+                    className="bg-blue-50 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 pr-14 text-lg text-gray-900 font-medium"
                     placeholder="Password"
                     placeholderTextColor="#6b7280"
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     value={password}
                     onChangeText={setPassword}
                 />
+                <TouchableOpacity 
+                    className="absolute right-4 top-4"
+                    onPress={() => setShowPassword(!showPassword)}
+                >
+                    <Ionicons 
+                        name={showPassword ? "eye-off-outline" : "eye-outline"} 
+                        size={24} 
+                        color="#6b7280" 
+                    />
+                </TouchableOpacity>
                  {/* <Text className="text-right text-blue-600 font-bold mt-3">Forgot your password?</Text> */}
             </View>
         </View>
@@ -76,7 +87,7 @@ export default function LoginScreen() {
           )}
         </Pressable>
 
-        <TouchableOpacity onPress={() => router.push("/(auth)/register")} className="mt-8">
+        <TouchableOpacity onPress={() => router.push("/(auth)/role-selection")} className="mt-8">
             <Text className="text-gray-900 font-bold text-center text-base">Create new account</Text>
         </TouchableOpacity>
       </View>

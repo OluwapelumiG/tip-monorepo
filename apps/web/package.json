@@ -4,14 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "dotenv -e ../../.env -- next dev --port 3001",
-    "build": "dotenv -e ../../.env -- next build",
+    "build": "NODE_ENV=production dotenv -e ../../.env -- next build",
     "start": "dotenv -e ../../.env -- next start"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
-    "@illtip-monorepo/api": "workspace:*",
-    "@illtip-monorepo/auth": "workspace:*",
-    "@illtip-monorepo/env": "workspace:*",
+    "@illtip/api": "workspace:*",
+    "@illtip/assets": "workspace:*",
+    "@illtip/auth": "workspace:*",
+    "@illtip/env": "workspace:*",
+    "@illtip/ui": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/server": "catalog:",
     "@orpc/tanstack-query": "catalog:",
@@ -27,8 +29,8 @@
     "lucide-react": "^0.546.0",
     "next": "^16.1.1",
     "next-themes": "^0.4.6",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "shadcn": "^3.6.2",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.1",
@@ -36,12 +38,12 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@illtip-monorepo/config": "workspace:*",
+    "@illtip/config": "workspace:*",
     "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/react-query-devtools": "^5.91.1",
     "@types/node": "^20",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "tailwindcss": "^4.1.10",
     "typescript": "catalog:"
   }

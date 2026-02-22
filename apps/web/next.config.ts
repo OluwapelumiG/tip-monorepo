@@ -1,9 +1,8 @@
-import "@illtip-monorepo/env/web";
+import "@illtip/env/web";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  reactCompiler: true,
 };
 
 export default nextConfig;

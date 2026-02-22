@@ -2,10 +2,10 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Button } from "heroui-native";
 import { useRef, useState } from "react";
-import { Dimensions, ScrollView, Text, View } from "react-native";
+import { Dimensions, ScrollView, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { withUniwind } from "uniwind";
-import logo from "@/assets/logo.png";
+import { logo } from "@illtip/assets";
 
 const { width } = Dimensions.get("window");
 
@@ -47,7 +47,14 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <StyledSafeAreaView className="flex-1">
+    <StyledSafeAreaView className="flex-1 bg-white dark:bg-black">
+      {/* Skip Button */}
+      <View className="absolute top-12 right-6 z-20">
+        <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
+           <Text className="text-blue-600 font-bold text-lg">Skip</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView
         ref={scrollViewRef}
         horizontal

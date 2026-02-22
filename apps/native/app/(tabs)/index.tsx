@@ -1,12 +1,27 @@
-import { Card } from "heroui-native";
-import { Text, View } from "react-native";
-
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
-import React, { useState } from "react";
-import { FlatList, Image, TextInput, TouchableOpacity } from "react-native";
+import { Link, useRouter } from "expo-router";
+import React, { useState, useEffect, useRef } from "react";
+import { 
+  FlatList, 
+  TextInput, 
+  TouchableOpacity, 
+  View, 
+  Text, 
+  ActivityIndicator, 
+  Share, 
+  ScrollView, 
+  useWindowDimensions 
+} from "react-native";
+import { Image } from "expo-image";
+import * as Linking from "expo-linking";
 import { SafeAreaView } from "react-native-safe-area-context";
-import logo from "@/assets/logo.png";
+import { logo } from "@illtip/assets";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { orpc, queryClient } from "@/utils/orpc";
+import { MediaCarousel } from "@/components/media-carousel";
+import { PostSkeleton } from "@/components/post-skeleton";
+import { authClient } from "@/lib/auth-client";
+
 
 
 
@@ -50,67 +65,177 @@ const FEED_DATA = [
 ];
 
 export default function DashboardScreen() {
-  const [activeTab, setActiveTab] = useState("Trending");
+  const router = useRouter();
+  const flatListRef = useRef<FlatList>(null);
+  const { width: windowWidth } = useWindowDimensions();
+  const SCREEN_WIDTH = windowWidth;
+  const [activeTab, setActiveTab] = useState<"Trending" | "Explore">("Trending");
+  const { data: session } = authClient.useSession();
+
+  const handleUserPress = (userId: string) => {
+    if (userId === session?.user?.id) {
+      router.push("/profile");
+    } else {
+      router.push(`/user/${userId}`);
+    }
+  };
+
+  const { 
+    data, 
+    isLoading, 
+    isRefetching,
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage,
+    refetch 
+  } = useInfiniteQuery({
+    ...orpc.post.getPosts.infiniteOptions({
+        input: (pageParam) => ({ sortBy: activeTab === "Trending" ? "trending" : "explore", limit: 5, cursor: pageParam }),
+        getNextPageParam: (lastPage: any) => lastPage.nextCursor,
+        initialPageParam: undefined as string | undefined,
+    }),
+  });
+
+  useEffect(() => {
+    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+  }, [activeTab]);
+
+  const posts = data?.pages.flatMap((page: any) => page.items) ?? [];
+
+  const { mutate: toggleLike } = useMutation(
+    orpc.post.toggleLike.mutationOptions({
+      onSuccess: () => {
+        refetch();
+      },
+    })
+  );
+
+  const { mutate: toggleBookmark } = useMutation(
+    orpc.post.toggleBookmark.mutationOptions({
+      onSuccess: () => {
+        refetch();
+      },
+    })
+  );
+
+  const { mutate: incrementShare } = useMutation(
+    orpc.post.incrementShare.mutationOptions({
+      onSuccess: () => {
+        refetch();
+      },
+    })
+  );
+
+  const handleLike = (postId: string) => {
+    toggleLike({ postId });
+  };
+
+  const handleBookmark = (postId: string) => {
+    toggleBookmark({ postId });
+  };
+
+  const handleShare = async (post: any) => {
+    try {
+      const url = Linking.createURL(`post/${post.id}`);
+      await Share.share({
+        message: `${post.title}\n\n${post.description}\n\nCheck it out on i'll Tip!\n\n${url}`,
+      });
+      incrementShare({ postId: post.id });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderItem = ({ item }: { item: any }) => (
     <View className="mb-8 border-b border-gray-100 dark:border-gray-800 pb-6">
        {/* User Header */}
        <View className="flex-row items-center px-4 mb-3">
-          <View className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 items-center justify-center border-2 border-blue-500 mr-3 overflow-hidden">
-               {/* Use Image if available, else placeholder */}
-               <View className="h-full w-full bg-blue-200 dark:bg-blue-800" /> 
-          </View>
-          <View>
+          <TouchableOpacity 
+            onPress={() => handleUserPress(item.user.id)}
+            className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 items-center justify-center border-2 border-blue-500 mr-3 overflow-hidden"
+          >
+               {item.user.image ? (
+                   <Image 
+                     source={{ uri: item.user.image }} 
+                     className="h-full w-full" 
+                     style={{ width: 44, height: 44, borderRadius: 22 }}
+                   />
+               ) : (
+                   <View className="h-full w-full bg-blue-200 dark:bg-blue-800" />
+               )}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleUserPress(item.user.id)}>
               <Text className="font-bold text-gray-900 dark:text-white text-base">{item.user.name}</Text>
               <View className="flex-row items-center">
                   <Ionicons name="star" size={12} color="#FBBF24" />
-                  <Text className="text-gray-500 dark:text-gray-400 text-xs ml-1">{item.user.rating} • {item.user.time}</Text>
+                  <Text className="text-gray-500 dark:text-gray-400 text-xs ml-1">4.5 • {new Date(item.createdAt).toLocaleDateString()}</Text>
               </View>
-          </View>
+          </TouchableOpacity>
        </View>
        
-       {/* Tag */}
+       {/* Tag - Use location or a placeholder */}
        <View className="px-4 mb-3">
             <View className="border border-blue-200 dark:border-blue-800 rounded-md px-3 py-1 self-start">
-                 <Text className="text-blue-600 dark:text-blue-400 text-xs font-semibold">{item.tag}</Text>
+                 <Text className="text-blue-600 dark:text-blue-400 text-xs font-semibold">{item.location || "General"}</Text>
             </View>
        </View>
 
-       {/* Content Placeholder (Gray Box) */}
-       <View className="w-full h-64 bg-gray-200 dark:bg-gray-800 mb-3" />
+       {/* Content Media - Only show if present */}
+       {item.media && item.media.length > 0 ? (
+           <View className="mb-3">
+               <MediaCarousel 
+                   media={item.media as any} 
+                   height={SCREEN_WIDTH * 0.8} 
+                   width={SCREEN_WIDTH} 
+                   onLike={() => handleLike(item.id)}
+               />
+           </View>
+       ) : null}
 
        {/* Stats */}
        <View className="flex-row justify-between px-4 mb-3">
             <View className="flex-row items-center space-x-4">
                 <View className="flex-row items-center mr-4">
                      <Ionicons name="eye-outline" size={18} className="text-gray-600 dark:text-gray-400" />
-                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item.content.views}</Text>
+                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item.viewCount}</Text>
                 </View>
-                 <View className="flex-row items-center mr-4">
-                     <Ionicons name="heart-outline" size={18} className="text-gray-600 dark:text-gray-400" />
-                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item.content.likes}</Text>
-                </View>
-                 <View className="flex-row items-center mr-4">
+                  <TouchableOpacity onPress={() => handleLike(item.id)} className="flex-row items-center mr-4">
+                     <Ionicons 
+                        name={item.isLiked ? "heart" : "heart-outline"} 
+                        size={18} 
+                        color={item.isLiked ? "#ef4444" : "#6b7280"} 
+                     />
+                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item._count.likes}</Text>
+                </TouchableOpacity>
+                 <TouchableOpacity onPress={() => router.push(`/post/${item.id}`)} className="flex-row items-center mr-4">
                      <Ionicons name="chatbubble-outline" size={18} className="text-gray-600 dark:text-gray-400" />
-                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item.content.comments}</Text>
-                </View>
-                 <View className="flex-row items-center">
+                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item._count.comments}</Text>
+                </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleShare(item)} className="flex-row items-center mr-4">
                      <Ionicons name="share-social-outline" size={18} className="text-gray-600 dark:text-gray-400" />
-                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item.content.shares}</Text>
-                </View>
-            </View>
-            <View className="flex-row">
-                 <View className="h-2 w-2 rounded-full bg-blue-600 mx-0.5" />
-                 <View className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-700 mx-0.5" />
-                 <View className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-700 mx-0.5" />
+                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">Share</Text>
+                </TouchableOpacity>
+                 <TouchableOpacity onPress={() => handleBookmark(item.id)} className="flex-row items-center">
+                     <Ionicons 
+                        name={item.isBookmarked ? "bookmark" : "bookmark-outline"} 
+                        size={18} 
+                        color={item.isBookmarked ? "#2563eb" : "#6b7280"} 
+                     />
+                     <Text className="text-gray-600 dark:text-gray-400 text-xs ml-1 font-medium">{item._count.bookmarks}</Text>
+                </TouchableOpacity>
             </View>
        </View>
 
        {/* Title & Description */}
-       <View className="px-4">
-            <Text className="text-gray-900 dark:text-white font-bold text-lg mb-1">{item.content.title}</Text>
-            <Text className="text-gray-500 dark:text-gray-400 text-xs leading-4">{item.content.description}</Text>
-       </View>
+       <TouchableOpacity onPress={() => router.push(`/post/${item.id}`)} className="px-4">
+            <Text className="text-gray-900 dark:text-white font-bold text-lg mb-1">{item.title}</Text>
+            <Text 
+                className={`text-gray-500 dark:text-gray-400 leading-5 ${item.media?.length === 0 ? "text-lg text-gray-800 dark:text-gray-200" : "text-xs"}`} 
+                numberOfLines={item.media?.length === 0 ? 0 : 2}
+            >
+                {item.description}
+            </Text>
+       </TouchableOpacity>
     </View>
   );
 
@@ -121,7 +246,7 @@ export default function DashboardScreen() {
           <View className="flex-row justify-between items-center bg-white dark:bg-black px-4 py-3 border-b border-gray-50 dark:border-gray-800">
                {/* <View className="w-8" />  */}
                <View className="flex-row items-center">
-                    <Image source={logo} style={{ width: 42, height: 42 }} resizeMode="contain" className="mr-2" />
+                    <Image source={logo} style={{ width: 42, height: 42 }} contentFit="contain" className="mr-2" />
                </View>
                <Text className="text-xl font-bold text-gray-800 dark:text-white">i'll Tip</Text>
                <TouchableOpacity>
@@ -162,12 +287,52 @@ export default function DashboardScreen() {
 
           {/* Feed List */}
           <FlatList
-          data={FEED_DATA}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          />
+                ref={flatListRef}
+                data={posts}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 100 }}
+                onRefresh={refetch}
+                refreshing={isRefetching}
+                onEndReached={() => {
+                    if (hasNextPage && !isFetchingNextPage) {
+                        fetchNextPage();
+                    }
+                }}
+                onEndReachedThreshold={0.8}
+                ListEmptyComponent={() => (
+                    isLoading && !isRefetching ? (
+                        <View className="flex-1">
+                             <PostSkeleton />
+                             <PostSkeleton />
+                             <PostSkeleton />
+                        </View>
+                    ) : (
+                        <View className="flex-1 items-center justify-center py-20">
+                            <Text className="text-gray-500 dark:text-gray-400 text-lg">
+                                {isLoading ? "Loading posts..." : "No posts yet"}
+                            </Text>
+                        </View>
+                    )
+                )}
+                ListFooterComponent={() => (
+                    isFetchingNextPage ? (
+                        <View className="py-4">
+                            <PostSkeleton />
+                            <PostSkeleton />
+                        </View>
+                    ) : (
+                        !hasNextPage && posts.length > 0 ? (
+                            <View className="py-2 items-center">
+                                <Text className="text-gray-400 dark:text-gray-600 font-medium italic">
+                                    More posts coming up shortly, stay tuned! ✨
+                                </Text>
+                            </View>
+                        ) : <View style={{ height: 40 }} />
+                    )
+                )}
+            />
      </SafeAreaView>
     </View>
   );

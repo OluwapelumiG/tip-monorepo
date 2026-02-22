@@ -14,19 +14,27 @@ export const unstable_settings = {
 
 function StackLayout() {
   return (
-    <Stack screenOptions={{}}>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-      <Stack.Screen name="welcome" options={{ headerShown: false }} />
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="onboarding" />
+      <Stack.Screen name="welcome" />
       
       {/* Auth Routes */}
-      <Stack.Screen name="(auth)/role-selection" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)/register" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)/role-selection" />
+      <Stack.Screen name="(auth)/login" />
+      <Stack.Screen name="(auth)/register" />
       
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-      <Stack.Screen name="modal" options={{ title: "Modal", presentation: "modal" }} />
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="(drawer)" />
+      <Stack.Screen name="user/[id]" />
+      <Stack.Screen name="post/[id]" />
+      <Stack.Screen name="settings/customization" />
+      <Stack.Screen name="settings/language" />
+      <Stack.Screen name="settings/finance" />
+      <Stack.Screen name="settings/subscription" />
+      <Stack.Screen name="settings/help" />
+      <Stack.Screen name="settings/about" />
+      <Stack.Screen name="modal" options={{ title: "Modal", presentation: "modal", headerShown: true }} />
     </Stack>
   );
 }

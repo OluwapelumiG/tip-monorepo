@@ -1,6 +1,6 @@
-import type { AppRouterClient } from "@illtip-monorepo/api/routers/index";
+import type { AppRouterClient } from "@illtip/api/routers/index";
 
-import { env } from "@illtip-monorepo/env/native";
+import { env } from "@illtip/env/native";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";

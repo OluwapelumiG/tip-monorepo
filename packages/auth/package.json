@@ -1,5 +1,5 @@
 {
-  "name": "@illtip-monorepo/auth",
+  "name": "@illtip/auth",
   "type": "module",
   "exports": {
     ".": {
@@ -12,14 +12,14 @@
   "scripts": {},
   "dependencies": {
     "@better-auth/expo": "catalog:",
-    "@illtip-monorepo/db": "workspace:*",
-    "@illtip-monorepo/env": "workspace:*",
+    "@illtip/db": "workspace:*",
+    "@illtip/env": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@illtip-monorepo/config": "workspace:*",
+    "@illtip/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

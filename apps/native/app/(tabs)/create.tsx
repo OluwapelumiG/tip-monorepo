@@ -1,8 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as ImagePicker from "expo-image-picker";
+import { useMutation } from "@tanstack/react-query";
+import { orpc, queryClient } from "@/utils/orpc";
+import { env } from "@illtip/env/native";
 
 // Mock Location Data
 const LOCATIONS = ["Select Location", "Location A", "Location B", "Location C", "Location D"];
@@ -16,6 +20,106 @@ export default function CreateScreen() {
   const [postTitle, setPostTitle] = useState("");
   const [postDescription, setPostDescription] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("Select Location");
+  const [media, setMedia] = useState<{ url: string; type: "image" | "video"; fileName?: string }[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Mutations
+  const { mutate: createPost, isPending } = useMutation(
+    orpc.post.createPost.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(orpc.post.getPosts.queryOptions());
+        Alert.alert("Success", "Post created successfully!");
+        setPostTitle("");
+        setPostDescription("");
+        setMedia([]);
+        setSelectedLocation("Select Location");
+        router.replace("/(tabs)");
+      },
+      onError: (error: any) => {
+        Alert.alert("Error", error.message);
+      },
+    })
+  );
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsMultipleSelection: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const selectedMedia = result.assets.map(asset => ({
+        url: asset.uri,
+        type: (asset.type === 'video' ? 'video' : 'image') as "image" | "video",
+        fileName: asset.fileName ?? asset.uri.split('/').pop()
+      }));
+      setMedia([...media, ...selectedMedia]);
+    }
+  };
+
+  const uploadMedia = async (mediaItem: typeof media[0]) => {
+    const formData = new FormData();
+    const type = mediaItem.type === "image" ? "image/jpeg" : "video/mp4";
+    
+    formData.append("file", {
+      uri: mediaItem.url,
+      name: mediaItem.fileName || "upload",
+      type: type,
+    } as any);
+    formData.append("folder", "posts");
+
+    try {
+      const response = await fetch(`${env.EXPO_PUBLIC_SERVER_URL}/upload`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error("Upload Error:", error);
+      throw error;
+    }
+  };
+
+  const handlePost = async () => {
+    if (!postTitle || !postDescription) {
+      Alert.alert("Error", "Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      
+      const uploadedMedia = [];
+      for (const item of media) {
+        const remoteUrl = await uploadMedia(item);
+        uploadedMedia.push({
+          url: remoteUrl,
+          type: item.type,
+        });
+      }
+
+      createPost({
+        title: postTitle,
+        description: postDescription,
+        location: selectedLocation === "Select Location" ? undefined : selectedLocation,
+        media: uploadedMedia,
+      });
+    } catch (error) {
+      Alert.alert("Error", "Failed to upload media. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   // Job Form State
   const [jobTitle, setJobTitle] = useState("");
@@ -73,10 +177,32 @@ export default function CreateScreen() {
                     />
                     <Text className="text-gray-400 text-xs mb-6">Tell us more about your content.</Text>
 
-                    {/* Media Upload Placeholder */}
-                    <TouchableOpacity className="w-full aspect-square bg-gray-100 dark:bg-gray-800 rounded-3xl mb-6 items-center justify-center border border-dashed border-gray-300 dark:border-gray-700">
-                        <Text className="text-black dark:text-white font-bold text-lg">Upload photos and videos here</Text>
-                    </TouchableOpacity>
+                    {/* Media Upload */}
+                    <View className="mb-6">
+                        <TouchableOpacity 
+                            onPress={pickImage}
+                            className="w-full aspect-video bg-gray-100 dark:bg-gray-800 rounded-3xl items-center justify-center border border-dashed border-gray-300 dark:border-gray-700 overflow-hidden"
+                        >
+                            {media.length > 0 ? (
+                                <View className="flex-row flex-wrap justify-center gap-2 p-4">
+                                    {media.map((m, i) => (
+                                        <View key={i} className="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
+                                            <Image source={{ uri: m.url }} className="w-full h-full" />
+                                        </View>
+                                    ))}
+                                    <View className="w-20 h-20 rounded-lg bg-blue-100 items-center justify-center">
+                                        <Ionicons name="add" size={32} color="#2563eb" />
+                                    </View>
+                                </View>
+                            ) : (
+                                <View className="items-center">
+                                    <Ionicons name="images-outline" size={48} color="#9CA3AF" />
+                                    <Text className="text-gray-500 font-bold text-lg mt-2">Upload photos</Text>
+                                </View>
+                            )}
+                        </TouchableOpacity>
+                        <Text className="text-gray-400 text-xs mt-2">Add up to 5 photos.</Text>
+                    </View>
 
                     {/* Location Selector */}
                     <Text className="text-base font-bold text-black dark:text-white mb-3">Location</Text>
@@ -170,8 +296,19 @@ export default function CreateScreen() {
             >
                 <Text className="text-blue-600 font-bold text-lg">Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="flex-1 py-4 rounded-xl bg-blue-600 justify-center items-center shadow-lg shadow-blue-200 dark:shadow-none">
-                <Text className="text-white font-bold text-lg">Post</Text>
+            <TouchableOpacity 
+                className={`flex-1 py-4 rounded-xl bg-blue-600 justify-center items-center shadow-lg shadow-blue-200 dark:shadow-none ${isPending || isUploading ? "opacity-70" : ""}`}
+                onPress={handlePost}
+                disabled={isPending || isUploading}
+            >
+                {isPending || isUploading ? (
+                    <View className="flex-row items-center">
+                        <ActivityIndicator color="white" className="mr-2" />
+                        <Text className="text-white font-bold">{isUploading ? "Uploading..." : "Posting..."}</Text>
+                    </View>
+                ) : (
+                    <Text className="text-white font-bold text-lg">Post</Text>
+                )}
             </TouchableOpacity>
         </View>
 

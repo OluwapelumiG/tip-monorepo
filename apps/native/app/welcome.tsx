@@ -4,7 +4,7 @@ import { Button } from "heroui-native";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import logo from "@/assets/logo.png";
+import { logo } from "@illtip/assets";
 
 export default function WelcomeScreen() {
   const router = useRouter();

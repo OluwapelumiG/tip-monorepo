@@ -1,5 +1,5 @@
 {
-  "name": "@illtip-monorepo/db",
+  "name": "@illtip/db",
   "type": "module",
   "exports": {
     ".": {
@@ -16,16 +16,16 @@
     "db:studio": "dotenv -e ../../.env -- prisma studio"
   },
   "dependencies": {
-    "@illtip-monorepo/env": "workspace:*",
-    "@prisma/adapter-pg": "^7.2.0",
+    "@illtip/env": "workspace:*",
+    "@prisma/adapter-pg": "catalog:",
     "@prisma/client": "catalog:",
     "dotenv": "catalog:",
-    "pg": "^8.17.1",
+    "pg": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@illtip-monorepo/config": "workspace:*",
-    "@types/pg": "^8.16.0",
+    "@illtip/config": "workspace:*",
+    "@types/pg": "catalog:",
     "prisma": "^7.2.0",
     "typescript": "catalog:"
   }

@@ -1,31 +1,27 @@
 model User {
-  id            String    @id
+  id            String         @id
   name          String
-  email         String
-  emailVerified Boolean   @default(false)
+  email         String         @unique
+  emailVerified Boolean        @default(false)
   image         String?
   phoneNumber   String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  role          Role           @default(customer)
   accounts      Account[]
+  comments      Comment[]
+  posts         Post[]
+  bookmarks     PostBookmark[]
+  likes         PostLike[]
+  sessions      Session[]
 
-  role          Role      @default(customer)
-
-  @@unique([email])
   @@map("user")
-}
-
-enum Role {
-  admin
-  freelancer
-  customer
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -33,7 +29,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -43,7 +38,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -53,6 +47,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
@@ -68,4 +63,10 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum Role {
+  admin
+  freelancer
+  customer
 }

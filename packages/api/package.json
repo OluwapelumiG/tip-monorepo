@@ -1,5 +1,5 @@
 {
-  "name": "@illtip-monorepo/api",
+  "name": "@illtip/api",
   "type": "module",
   "exports": {
     ".": {
@@ -11,9 +11,9 @@
   },
   "scripts": {},
   "dependencies": {
-    "@illtip-monorepo/auth": "workspace:*",
-    "@illtip-monorepo/db": "workspace:*",
-    "@illtip-monorepo/env": "workspace:*",
+    "@illtip/auth": "workspace:*",
+    "@illtip/db": "workspace:*",
+    "@illtip/env": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
@@ -22,7 +22,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@illtip-monorepo/config": "workspace:*",
+    "@illtip/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

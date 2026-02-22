@@ -1,4 +1,4 @@
-import { env } from "@illtip-monorepo/env/web";
+import { env } from "@illtip/env/web";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({

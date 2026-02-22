@@ -13,6 +13,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const role = params.role || "customer";
@@ -74,14 +75,26 @@ export default function RegisterScreen() {
                 value={email}
                 onChangeText={setEmail}
             />
-            <TextInput
-                className="bg-blue-50 mt-4 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 text-lg text-gray-900 font-medium"
-                placeholder="Password"
-                placeholderTextColor="#6b7280"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
+            <View className="relative mt-4">
+                <TextInput
+                    className="bg-blue-50 border-2 border-blue-50 focus:border-blue-500 rounded-xl p-4 pr-14 text-lg text-gray-900 font-medium"
+                    placeholder="Password"
+                    placeholderTextColor="#6b7280"
+                    secureTextEntry={!showPassword}
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <TouchableOpacity 
+                    className="absolute right-4 top-4"
+                    onPress={() => setShowPassword(!showPassword)}
+                >
+                    <Ionicons 
+                        name={showPassword ? "eye-off-outline" : "eye-outline"} 
+                        size={24} 
+                        color="#6b7280" 
+                    />
+                </TouchableOpacity>
+            </View>
         </View>
 
         <Pressable

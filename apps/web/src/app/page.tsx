@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Search, Briefcase, TrendingUp, Users } from "lucide-react";
+import { logo, splash } from "@illtip/assets";
 
 export default function Home() {
 
@@ -17,7 +18,7 @@ export default function Home() {
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative h-10 w-10 transition-transform duration-500 ease-out group-hover:rotate-12">
                <Image
-                src="/logo.png"
+                src={logo}
                 alt="i'llTip Logo"
                 fill
                 className="object-contain"
@@ -130,7 +131,7 @@ export default function Home() {
                 >
                      <div className="relative h-[500px] w-full lg:h-[700px]">
                          <Image
-                            src="/splash.png"
+                            src={splash}
                             alt="Dashboard Preview"
                             fill
                             className="object-contain drop-shadow-2xl"
@@ -321,7 +322,7 @@ export default function Home() {
              <div className="grid md:grid-cols-4 gap-12 mb-16">
                  <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                        <Image src="/logo.png" alt="Logo" width={32} height={32} />
+                        <Image src={logo} alt="Logo" width={32} height={32} />
                         <span className="text-xl font-bold">i'llTip</span>
                     </div>
                     <p className="text-muted-foreground">Empowering the workforce with AI-driven job matching and career development tools.</p>

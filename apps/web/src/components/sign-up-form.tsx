@@ -12,7 +12,8 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 export default function SignUpForm({ 
     onSwitchToSignIn, 
@@ -24,6 +25,7 @@ export default function SignUpForm({
     role: "freelancer" | "customer";
 }) {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const { isPending } = authClient.useSession();
 
   const form = useForm({
@@ -133,16 +135,31 @@ export default function SignUpForm({
           <form.Field name="password">
             {(field) => (
               <div className="space-y-2">
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="password"
-                   placeholder="Password"
-                   className="h-14 rounded-xl bg-muted/30 px-4 border-2 border-transparent focus:border-primary/50 focus:bg-background transition-colors"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type={showPassword ? "text" : "password"}
+                     placeholder="Password"
+                     className="h-14 rounded-xl bg-muted/30 pl-4 pr-12 border-2 border-transparent focus:border-primary/50 focus:bg-background transition-colors"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-5 w-5 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
                 {field.state.meta.errors.map((error) => (
                   <p key={error?.message} className="text-sm text-red-500">
                     {error?.message}

@@ -1,0 +1,66 @@
+model Post {
+  id          String         @id @default(cuid())
+  title       String
+  description String
+  location    String?
+  viewCount   Int            @default(0)
+  shareCount  Int            @default(0)
+  userId      String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  comments    Comment[]
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookmarks   PostBookmark[]
+  likes       PostLike[]
+  media       PostMedia[]
+
+  @@map("post")
+}
+
+model PostMedia {
+  id     String @id @default(cuid())
+  postId String
+  url    String
+  type   String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("post_media")
+}
+
+model PostLike {
+  id     String @id @default(cuid())
+  postId String
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("post_like")
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  postId    String
+  userId    String
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comment")
+}
+
+model PostBookmark {
+  id     String @id @default(cuid())
+  postId String
+  userId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("post_bookmark")
+}

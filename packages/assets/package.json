@@ -1,0 +1,11 @@
+{
+  "name": "@illtip/assets",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./logo.png": "./logo.png",
+    "./splash.png": "./splash.png",
+    ".": "./index.ts"
+  }
+}

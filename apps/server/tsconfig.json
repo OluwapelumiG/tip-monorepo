@@ -1,5 +1,5 @@
 {
-  "extends": "@illtip-monorepo/config/tsconfig.base.json",
+  "extends": "@illtip/config/tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
     "outDir": "dist",
