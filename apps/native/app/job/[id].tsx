@@ -1,15 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View, Image, ActivityIndicator, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, Text, TextInput, TouchableOpacity, View, Image, ActivityIndicator, Alert, useWindowDimensions, Share } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { orpc } from "@/utils/orpc";
 import { Linking } from "react-native";
+import { authClient } from "@/lib/auth-client";
+import type { User } from "@illtip/api";
 
 export default function JobDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  
+  const { data: session } = authClient.useSession();
+  const currentUser = session?.user as User | undefined;
   
   // Fetch Job Details
   const { data: job, isLoading } = useQuery(orpc.job.getById.queryOptions({ input: id }));
@@ -53,44 +60,63 @@ export default function JobDetailScreen() {
     );
   }
 
+  const hasImage = !!job.media?.[0];
+  const isEmployerOrCustomer = currentUser?.role === "employer" || currentUser?.role === "customer";
+  const isJobOwner = currentUser?.id === job.employerId;
+  const isAdmin = currentUser?.role === "admin";
+  const showApplyButton = (!isEmployerOrCustomer || isAdmin) && !isJobOwner;
+
+  // Calculate background height to be 75% of the image size + top safe area spacing
+  const topSpacing = Math.max(insets.top, 20) + 8 + 44 + 24; // insets + pt-2 + headerHeight + pb-6
+  const imageSize = width - 48; // aspect square, padding horiz 24px each side
+  const bgHeight = topSpacing + (imageSize * 0.75);
+
   return (
     <View className="flex-1 bg-white dark:bg-black" style={{ flex: 1 }}>
       <Stack.Screen options={{ headerShown: false }} />
       
-      {/* Blue Header Background */}
-      <View className="absolute top-0 left-0 right-0 h-[45%] bg-blue-600 rounded-b-[40px] z-0" />
-
-      <SafeAreaView className="flex-1" edges={["top", "bottom"]} style={{ flex: 1 }}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={{ flexGrow: 1 }}>
         
-        {/* Header Navigation */}
-        <View className="px-6 pt-2 pb-6 flex-row justify-between items-center z-10">
-           <TouchableOpacity onPress={() => router.back()}>
-                <Ionicons name="arrow-back" size={28} color="white" />
-           </TouchableOpacity>
-           <Text className="text-white text-lg font-bold">Detail</Text>
-           <TouchableOpacity>
-                <Ionicons name="share-outline" size={24} color="white" />
-           </TouchableOpacity>
-        </View>
-
-        <ScrollView className="flex-1 z-10" showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
-            
-            {/* Main Image Card */}
-            <View className="px-6">
-                <View className="w-full aspect-square bg-gray-200 dark:bg-gray-800 rounded-3xl shadow-lg border-4 border-white dark:border-gray-900 overflow-hidden relative">
-                    {job.media?.[0] ? (
-                        <Image source={{ uri: job.media[0].url }} className="flex-1" />
-                    ) : (
-                        <View className="flex-1 bg-gray-200 dark:bg-gray-800 items-center justify-center">
-                            <Ionicons name="image-outline" size={80} color="#9CA3AF" />
-                        </View>
-                    )}
-                </View>
+        {/* Blue Header Background (scrolls with content) */}
+        {hasImage && (
+            <View 
+                className="absolute top-0 left-0 right-0 bg-blue-600 rounded-b-[40px] z-0" 
+                style={{ height: bgHeight }}
+            />
+        )}
+        
+        <View style={{ paddingTop: Math.max(insets.top, 20) }} className="flex-1 pb-10">
+            {/* Header Navigation */}
+            <View className="px-6 pt-2 pb-6 flex-row justify-between items-center z-10">
+               <TouchableOpacity onPress={() => router.back()}>
+                    <Ionicons name="arrow-back" size={28} color={hasImage ? "white" : "black"} />
+               </TouchableOpacity>
+               <Text className={`text-lg font-bold ${hasImage ? "text-white" : "text-black dark:text-white"}`}>Detail</Text>
+               <TouchableOpacity onPress={async () => {
+                   try {
+                     await Share.share({
+                       message: `Check out this job: ${job.title} at ${job.employer.name}!`,
+                     });
+                   } catch (error: any) {
+                     Alert.alert("Error sharing:", error.message);
+                   }
+               }}>
+                    <Ionicons name="share-outline" size={24} color={hasImage ? "white" : "black"} />
+               </TouchableOpacity>
             </View>
 
+            {/* Main Image Card */}
+            {hasImage && (
+                <View className="px-6 z-10 mb-6 relative">
+                    <View className="w-full aspect-square bg-gray-200 dark:bg-gray-800 rounded-3xl shadow-lg border-4 border-white dark:border-gray-900 overflow-hidden relative">
+                        <Image source={{ uri: job.media[0].url }} className="flex-1" />
+                    </View>
+                </View>
+            )}
+
             {/* Content Body */}
-            <View className="px-6 mt-6 pb-24">
-                <Text className="text-3xl font-bold text-black dark:text-white leading-tight mb-2">
+            <View className="px-6 z-10">
+                <Text className="text-3xl font-bold text-black dark:text-white leading-tight mb-2 mt-2">
                     {job.title}
                 </Text>
                 
@@ -135,29 +161,42 @@ export default function JobDetailScreen() {
                 )}
 
             </View>
-        </ScrollView>
-
-        {/* Footer */}
-        <View className="px-6 py-4 flex-row items-center justify-between bg-white dark:bg-black border-t border-gray-100 dark:border-gray-900">
-             <TouchableOpacity 
-                className="flex-1 bg-blue-600 rounded-full py-4 flex-row items-center justify-center shadow-blue-300 shadow-md h-16"
-                onPress={() => apply({ jobId: job.id })}
-                disabled={isApplying}
-             >
-                 {isApplying ? (
-                    <ActivityIndicator color="white" />
-                 ) : (
-                    <>
-                        <Text className="text-white font-bold text-lg mr-2">Apply for Lead</Text>
-                        <View className="bg-yellow-400 px-2 py-0.5 rounded-md">
-                            <Text className="text-blue-900 font-bold text-xs">1 CREDIT</Text>
-                        </View>
-                    </>
-                 )}
-             </TouchableOpacity>
         </View>
+      </ScrollView>
 
-      </SafeAreaView>
+      {/* Footer */}
+      {(showApplyButton || isJobOwner) && (
+          <View className="px-6 py-4 flex-row items-center justify-between bg-white dark:bg-black border-t border-gray-100 dark:border-gray-900">
+               {showApplyButton && (
+                   <TouchableOpacity 
+                      className="flex-1 bg-blue-600 rounded-full py-4 flex-row items-center justify-center shadow-blue-300 shadow-md h-16"
+                      onPress={() => apply({ jobId: job.id })}
+                      disabled={isApplying}
+                   >
+                       {isApplying ? (
+                          <ActivityIndicator color="white" />
+                       ) : (
+                          <>
+                              <Text className="text-white font-bold text-lg mr-2">Apply for Lead</Text>
+                              <View className="bg-yellow-400 px-2 py-0.5 rounded-md">
+                                  <Text className="text-blue-900 font-bold text-xs">1 CREDIT</Text>
+                              </View>
+                          </>
+                       )}
+                   </TouchableOpacity>
+               )}
+
+               {isJobOwner && (
+                   <TouchableOpacity 
+                      className="flex-1 bg-gray-900 dark:bg-white rounded-full py-4 flex-row items-center justify-center shadow-gray-300 dark:shadow-none shadow-md h-16"
+                      onPress={() => router.push(`/job/${job.id}/applications` as any)}
+                   >
+                        <Text className="text-white dark:text-black font-bold text-lg">See Applications</Text>
+                   </TouchableOpacity>
+               )}
+          </View>
+      )}
+
     </View>
   );
 }

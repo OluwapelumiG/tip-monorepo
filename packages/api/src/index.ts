@@ -19,3 +19,6 @@ const requireAuth = o.middleware(async ({ context, next }) => {
 });
 
 export const protectedProcedure = publicProcedure.use(requireAuth);
+
+export type { Auth } from "@illtip/auth";
+export * from "./types";

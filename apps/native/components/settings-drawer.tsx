@@ -3,7 +3,8 @@ import { useRouter, Href } from "expo-router";
 import React, { useEffect } from "react";
 import { Modal, Pressable, Text, TouchableOpacity, View, ScrollView, StyleSheet, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from '@/lib/auth-client';
+import type { User } from '@illtip/api';
 import { Image } from "expo-image";
 
 interface SettingsItemProps {
@@ -47,7 +48,7 @@ export function SettingsDrawer({ visible, onClose }: SettingsDrawerProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { data: session } = authClient.useSession();
-  const user = session?.user;
+  const user = session?.user as User | undefined;
 
   const handleLogout = async () => {
     await authClient.signOut();
@@ -149,7 +150,23 @@ export function SettingsDrawer({ visible, onClose }: SettingsDrawerProps) {
                   )}
                 </View>
                 <Text className="text-xl font-bold text-gray-900 dark:text-white">{user?.name || "Username"}</Text>
-                <Text className="text-gray-500 text-sm mb-6">{user?.email || "user@email.com"}</Text>
+                <Text className="text-gray-500 text-sm mb-3">{user?.email || "user@email.com"}</Text>
+                
+                {user?.role && (
+                  <View className={`px-4 py-1.5 rounded-full mb-6 ${
+                    user.role === "employer" || user.role === "customer" 
+                      ? "bg-blue-100 dark:bg-blue-900" 
+                      : "bg-green-100 dark:bg-green-900"
+                  }`}>
+                    <Text className={`text-xs font-bold uppercase tracking-widest ${
+                      user.role === "employer" || user.role === "customer"
+                        ? "text-blue-600 dark:text-blue-400" 
+                        : "text-green-600 dark:text-green-400"
+                    }`}>
+                      {user.role === "employer" || user.role === "customer" ? "Employer" : "Job Seeker"}
+                    </Text>
+                  </View>
+                )}
                 
                 <TouchableOpacity 
                     className="border border-gray-200 dark:border-gray-800 rounded-xl px-10 py-2.5"
