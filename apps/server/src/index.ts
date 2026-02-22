@@ -12,6 +12,8 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { S3Client, PutObjectCommand, PutBucketPolicyCommand, GetObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
+import Stripe from "stripe";
+import prisma from "@illtip/db";
 // import ffmpeg from "fluent-ffmpeg";
 // import { writeFile, unlink, readFile } from "node:fs/promises";
 import { Readable } from "node:stream";
@@ -204,6 +206,95 @@ app.on(["GET", "HEAD"], "/media/:folder/:key", async (c) => {
     console.error(`[PROXY] Error for ${s3Key}:`, err.message);
     return c.json({ error: "Media not found" }, 404);
   }
+});
+
+// Payment Webhooks
+const stripe = new Stripe(env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
+
+app.post("/webhooks/stripe", async (c) => {
+  const signature = c.req.header("stripe-signature");
+  if (!signature) return c.json({ error: "No signature" }, 400);
+
+  try {
+    const body = await c.req.text();
+    const event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      env.STRIPE_WEBHOOK_SECRET!
+    );
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const { userId, planId } = session.metadata || {};
+
+      if (userId && planId) {
+        const plan = await prisma.paymentPlan.findUnique({ where: { id: planId } });
+        if (plan) {
+          await prisma.$transaction([
+            prisma.creditBalance.upsert({
+              where: { userId },
+              update: { credits: { increment: plan.credits } },
+              create: { userId, credits: plan.credits },
+            }),
+            prisma.paymentIntent.updateMany({
+              where: { externalId: session.id },
+              data: { status: "completed" },
+            }),
+          ]);
+          console.log(`[STRIPE WEBHOOK] Credits granted to user ${userId} for plan ${planId}`);
+        }
+      }
+    }
+
+    return c.json({ received: true });
+  } catch (err: any) {
+    console.error(`[STRIPE WEBHOOK ERROR] ${err.message}`);
+    return c.json({ error: err.message }, 400);
+  }
+});
+
+app.post("/webhooks/paystack", async (c) => {
+  const signature = c.req.header("x-paystack-signature");
+  if (!signature) return c.json({ error: "No signature" }, 400);
+
+  const body = await c.req.text();
+  const hash = crypto
+    .createHmac("sha512", env.PAYSTACK_SECRET_KEY!)
+    .update(body)
+    .digest("hex");
+
+  if (hash !== signature) {
+    return c.json({ error: "Invalid signature" }, 400);
+  }
+
+  const event = JSON.parse(body);
+
+  if (event.event === "charge.success") {
+    const { reference, metadata } = event.data;
+    const { userId, planId } = metadata || {};
+
+    if (userId && planId) {
+      const plan = await prisma.paymentPlan.findUnique({ where: { id: planId } });
+      if (plan) {
+        await prisma.$transaction([
+          prisma.creditBalance.upsert({
+            where: { userId },
+            update: { credits: { increment: plan.credits } },
+            create: { userId, credits: plan.credits },
+          }),
+          prisma.paymentIntent.update({
+            where: { externalId: reference },
+            data: { status: "completed" },
+          }),
+        ]);
+        console.log(`[PAYSTACK WEBHOOK] Credits granted to user ${userId} for plan ${planId}`);
+      }
+    }
+  }
+
+  return c.json({ received: true });
 });
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));

@@ -14,6 +14,9 @@ model User {
   bookmarks     PostBookmark[]
   likes         PostLike[]
   sessions      Session[]
+  jobs          Job[]
+  applications  JobApplication[]
+  creditBalance CreditBalance?
 
   @@map("user")
 }
@@ -69,4 +72,6 @@ enum Role {
   admin
   freelancer
   customer
+  employer
+  worker
 }

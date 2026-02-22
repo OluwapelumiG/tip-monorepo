@@ -1,0 +1,45 @@
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  company     String
+  location    String?
+  category    String?
+  salaryRange String?
+  status      String   @default("open") // open, closed, filled
+  employerId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employer     User             @relation(fields: [employerId], references: [id], onDelete: Cascade)
+  applications JobApplication[]
+  media        JobMedia[]
+
+  @@map("job")
+}
+
+model JobMedia {
+  id     String @id @default(cuid())
+  jobId  String
+  url    String
+  type   String // image, video
+  job    Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@map("job_media")
+}
+
+model JobApplication {
+  id          String   @id @default(cuid())
+  jobId       String
+  workerId    String
+  coverLetter String?
+  status      String   @default("pending") // pending, accepted, rejected
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  job    Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  worker User @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, workerId])
+  @@map("job_application")
+}
