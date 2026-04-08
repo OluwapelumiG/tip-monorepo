@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../index";
+import { ORPCError } from "@orpc/server";
 import prisma from "@illtip/db";
 
 export const jobRouter = {
@@ -23,7 +24,10 @@ export const jobRouter = {
       const { media, ...data } = input;
       
       if (user.role !== "employer" && user.role !== "customer" && user.role !== "admin") {
-        throw new Error("Only employers and customers can post jobs");
+        throw new ORPCError({
+          code: "FORBIDDEN",
+          message: "Only employers and customers can post jobs"
+        });
       }
 
       return await prisma.job.create({
@@ -181,8 +185,10 @@ export const jobRouter = {
       const { user } = context.session;
       const { jobId, coverLetter } = input;
 
-      if (user.role !== "worker" && user.role !== "admin") {
-        throw new Error("Only workers can apply for jobs");
+      if (user.role !== "freelancer" && user.role !== "admin") {
+        throw new ORPCError("FORBIDDEN", {
+          message: "Only freelancers can apply for jobs"
+        });
       }
 
       // Check credits
@@ -191,7 +197,9 @@ export const jobRouter = {
       });
 
       if (!balance || balance.credits <= 0) {
-        throw new Error("Insufficient credits. Please subscribe or purchase more application packs.");
+        throw new ORPCError("BAD_REQUEST", {
+          message: "Insufficient credits. Please subscribe or purchase more application packs."
+        });
       }
 
       // Start transaction: Use credits and create application
@@ -205,7 +213,9 @@ export const jobRouter = {
         });
 
         if (updatedBalance.credits < 0) {
-          throw new Error("Insufficient credits");
+          throw new ORPCError("BAD_REQUEST", {
+            message: "Insufficient credits"
+          });
         }
 
         return await tx.jobApplication.create({
@@ -229,7 +239,7 @@ export const jobRouter = {
       });
 
       if (!job || (job.employerId !== user.id && user.role !== "admin")) {
-        throw new Error("Unauthorized");
+        throw new ORPCError("UNAUTHORIZED", { message: "Unauthorized" });
       }
 
       return await prisma.jobApplication.findMany({
@@ -263,7 +273,7 @@ export const jobRouter = {
       });
 
       if (!job || (job.employerId !== user.id && user.role !== "admin")) {
-        throw new Error("Unauthorized");
+        throw new ORPCError("UNAUTHORIZED", { message: "Unauthorized" });
       }
 
       return await prisma.job.update({
